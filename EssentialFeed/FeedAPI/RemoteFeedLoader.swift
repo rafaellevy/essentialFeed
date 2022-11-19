@@ -41,13 +41,22 @@ public final class RemoteFeedLoader {
     public func load(completion: @escaping (Result) -> Void) {
         client.get(from:url) { result in
             switch result {
-            case .success:
-                completion(.failure(.invalidData))
+            case  let .success(data, _):
+                if let root = try? JSONDecoder().decode(Root.self, from: data) {
+                    completion(.success(root.items))
+                } else {
+                    completion(.failure(.invalidData))
+                }
+                
             case .failure:
                 completion(.failure(.conectivity))
             }
         }
     }
+}
+
+private struct Root: Decodable {
+    let items: [FeedItem]
 }
 
 

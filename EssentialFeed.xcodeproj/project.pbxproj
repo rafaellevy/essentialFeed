@@ -12,7 +12,6 @@
 		A74791A328F4D9DD007F2B18 /* EssentialFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = A747919728F4D9DD007F2B18 /* EssentialFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A74791B028F4DA8E007F2B18 /* FeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74791AD28F4DA8E007F2B18 /* FeedLoader.swift */; };
 		A74791B428F63DC0007F2B18 /* RemoteFeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74791B328F63DC0007F2B18 /* RemoteFeedLoader.swift */; };
-		A74791B528F63DC0007F2B18 /* RemoteFeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74791B328F63DC0007F2B18 /* RemoteFeedLoader.swift */; };
 		A7E82CFC2926B6E2004EB7E7 /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E82CFB2926B6E2004EB7E7 /* FeedItem.swift */; };
 /* End PBXBuildFile section */
 
@@ -228,7 +227,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A74791B528F63DC0007F2B18 /* RemoteFeedLoader.swift in Sources */,
 				A74791A228F4D9DD007F2B18 /* EssentialFeedTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
