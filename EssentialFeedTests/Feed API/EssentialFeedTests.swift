@@ -40,7 +40,7 @@ class EssentialFeedTests: XCTestCase {
         let url = URL(string: "https://www.a-url")!
         let (sut, client) = makeSUT(url: url)
         
-        expect(sut, toCompleteWith: .failure(.conectivity)) {
+        expect(sut, toCompleteWith: .failure(RemoteFeedLoader.Error.conectivity)) {
             let clientError = NSError(domain: "Test", code: 0)
             client.complete(with: clientError)
         }
@@ -56,7 +56,7 @@ class EssentialFeedTests: XCTestCase {
         
         samples.enumerated().forEach { index, code in
             
-            expect(sut, toCompleteWith: .failure(.invalidData)) {
+            expect(sut, toCompleteWith: .failure(RemoteFeedLoader.Error.invalidData)) {
                 let json = makeItemsJSON([])
                 client.complete(withStatusCode: code, data: json, at: index)
             }
@@ -67,7 +67,7 @@ class EssentialFeedTests: XCTestCase {
         let url = URL(string: "https://www.a-url")!
         let (sut, client) = makeSUT(url: url)
         
-        expect(sut, toCompleteWith: .failure(.invalidData)) {
+        expect(sut, toCompleteWith: .failure(RemoteFeedLoader.Error.invalidData)) {
             let invalidJSON = Data(bytes: "Invalid Data".utf8)
             client.complete(withStatusCode: 200, data: invalidJSON)
         }
@@ -91,17 +91,13 @@ class EssentialFeedTests: XCTestCase {
             id: UUID(),
             imageURL: URL(string: "http://a-url.com")!)
         
-        
-        
         let item2 = makeItem(
             id: UUID(),
             description: "a description",
             location: "a location",
             imageURL: URL(string: "http://another-url.com")!)
         
-        
         let items = [item1.model, item2.model]
-        
         
         expect(sut, toCompleteWith: .success(items)) {
             let json = makeItemsJSON([item1.json, item2.json])
@@ -127,11 +123,7 @@ class EssentialFeedTests: XCTestCase {
         
         XCTAssertTrue(capturedResults.isEmpty)
         
-        
-        
     }
-    
-    
     
     
     // Helpers
@@ -176,13 +168,30 @@ class EssentialFeedTests: XCTestCase {
     }
     
     
-    private func expect(_ sut: RemoteFeedLoader, toCompleteWith result: RemoteFeedLoader.Result, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line)  {
+    private func expect(_ sut: RemoteFeedLoader, toCompleteWith expectedResult: RemoteFeedLoader.Result, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line)  {
         
-        var capturedResults = [RemoteFeedLoader.Result]()
-        sut.load { capturedResults.append($0) }
+        let exp = expectation(description: "wait for load completion")
+        
+        sut.load { receivedResult in
+            switch ( receivedResult, expectedResult) {
+            case let (.success(receivedItems), .success(expectedItems)):
+                XCTAssertEqual(receivedItems, expectedItems, file: file, line: line)
+                
+            case let (.failure(receivedError as RemoteFeedLoader.Error), .failure(expectedError as RemoteFeedLoader.Error)):
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+                
+            default:
+                XCTFail("Expected result \(expectedResult) got \(receivedResult) instead", file: file, line: line)
+            }
+            
+            exp.fulfill()
+        }
+        
         action()
         
-        XCTAssertEqual(capturedResults, [result], file: file, line: line)
+        wait(for: [exp], timeout: 1.0)
+        
+        
         
     }
     
