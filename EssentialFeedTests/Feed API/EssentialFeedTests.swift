@@ -141,13 +141,7 @@ class EssentialFeedTests: XCTestCase {
         return .failure(error)
     }
     
-    private func trackForMemoryLeak(_ instance: AnyObject, file: StaticString = #filePath, line: UInt = #line) {
-        
-        addTeardownBlock { [weak instance] in
-            XCTAssertNil(instance, "Instance should have been deallocated", file: file, line: line)
-        }
-        
-    }
+    
     
     private func makeItem(id:UUID, description: String? = nil, location: String? = nil, imageURL: URL) -> (model:FeedItem, json: [String:Any]) {
         
