@@ -212,6 +212,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         
         override func startLoading() {
             if let requestObserver = URLProtocolStub.requestObserver {
+                // thread race fix: if we have an requestObserver we finish with the client
                 client?.urlProtocolDidFinishLoading(self)
                 return requestObserver(request)
             }
