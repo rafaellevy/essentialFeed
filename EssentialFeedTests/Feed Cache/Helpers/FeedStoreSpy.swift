@@ -16,11 +16,15 @@ class FeedStoreSpy: FeedStore {
     
     var receivedMessages = [ReceivedMessage]()
     
-    var retrieveMessages = [ReceivedMessage]()
+//    var retrieveMessages = [ReceivedMessage]()
 
     private var deletionCompletions = [(Error?) -> Void]()
     
     private var insertionCompletions = [(Error?) -> Void]()
+    
+    private var retrievalCompletions = [(Error?) -> Void]()
+    
+    
     
     
     
@@ -52,7 +56,12 @@ class FeedStoreSpy: FeedStore {
         insertionCompletions[index](nil)
     }
     
-    func retrieve() {
+    func retrieve(completion: @escaping(Error?) -> Void) {
+        retrievalCompletions.append(completion)
         receivedMessages.append(.retrieve)
+    }
+    func completeRetrieval(with error: Error, at index: Int = 0) {
+        retrievalCompletions[index](error)
+        
     }
 }

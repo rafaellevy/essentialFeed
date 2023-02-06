@@ -13,7 +13,7 @@ public protocol FeedStore {
     
     func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping (Error?) -> Void )
     
-    func retrieve()
+    func retrieve(completion:@escaping (Error?) -> Void)
 }
 
 
