@@ -10,13 +10,22 @@ import EssentialFeed
 
 
 final class ValidateFeedCacheUseCaseTests: XCTestCase {
-
+    
     func test_init_doesNotMessageStoreUponCreation() {
         let (_, store) = makeSUT()
         
         XCTAssertEqual(store.receivedMessages, [] )
     }
-
+    
+    func test_load_validateCache_deletesCacheOnRetrievalError() {
+        
+        let (sut, store) = makeSUT()
+        sut.validateCache()
+        store.completeRetrieval(with: anyNSError())
+        
+        XCTAssertEqual(store.receivedMessages, [.retrieve, .deleteCachedFeed])
+    }
+    
     
     // MARK: Helpers
     
@@ -27,6 +36,11 @@ final class ValidateFeedCacheUseCaseTests: XCTestCase {
         trackForMemoryLeak(sut, file: file, line: line)
         return (sut, store)
     }
+    
+    private func anyNSError() -> NSError {
+        return NSError(domain: "any error", code: 0)
+    }
+    
 }
 
 
