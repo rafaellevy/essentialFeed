@@ -16,7 +16,6 @@ class FeedStoreSpy: FeedStore {
     
     var receivedMessages = [ReceivedMessage]()
     
-//    var retrieveMessages = [ReceivedMessage]()
 
     private var deletionCompletions = [(Error?) -> Void]()
     
