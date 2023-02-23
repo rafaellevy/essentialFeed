@@ -2,10 +2,13 @@
 //  FeedCachePolicy.swift
 //  EssentialFeed
 //
+
 //  Created by Rafael Levy on 2/20/23.
+
 //
 
 import Foundation
+
 
 final class FeedCachePolicy {
     private init() {}
@@ -24,3 +27,4 @@ final class FeedCachePolicy {
          return date < maxCacheAge
      }
  }
+
