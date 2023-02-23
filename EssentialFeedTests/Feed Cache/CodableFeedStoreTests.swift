@@ -10,6 +10,12 @@ import EssentialFeed
 
  class CodableFeedStore {
      
+     private let storeURL: URL
+     
+     init(storeURL: URL) {
+         self.storeURL = storeURL
+     }
+     
      private struct Cache: Codable {
          let feed: [CodableFeedImage]
          let timestamp: Date
@@ -36,8 +42,10 @@ import EssentialFeed
              return LocalFeedImage(id: id, description: description, location: location, url: url)
          }
      }
+     
+     
 
-          private let storeURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("image-feed.store")
+    
      
      func retrieve(completion: @escaping FeedStore.RetrievalCompletion) {
          guard let data = try? Data(contentsOf: storeURL) else {
@@ -144,7 +152,8 @@ import EssentialFeed
      // - MARK: Helpers
           
      private func makeSUT(file: StaticString = #file, line: UInt = #line) -> CodableFeedStore {
-         let sut = CodableFeedStore()
+         let storeURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("image-feed.store")
+         let sut = CodableFeedStore(storeURL: storeURL)
          trackForMemoryLeak(sut, file: file, line: line)
          return sut
      }
