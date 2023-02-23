@@ -7,22 +7,23 @@
 
 import Foundation
 
-
 public final class LocalFeedLoader: FeedLoader {
     let store: FeedStore
     let currentDate: () -> Date
-    
-    public typealias SaveResult = Error?
-    
+
+  
+        
     public init(store: FeedStore, currentDate: @escaping () -> Date) {
         self.store = store
         self.currentDate = currentDate
-        
+
     }
     
 }
 
 extension LocalFeedLoader {
+    public typealias SaveResult = Error?
+
     public func save(_ feed: [FeedImage], completion: @escaping (SaveResult) -> Void ) {
         store.deleteCachedFeed { [ weak self ] error in
             
@@ -69,7 +70,9 @@ extension LocalFeedLoader {
             case .failure:
                 self.store.deleteCachedFeed { _ in}
                 
-            case let .found(_ , timestamp) where !FeedCachePolicy.validate(timestamp, against: self.currentDate()):
+
+            case let .found(_ , timestamp) where !FeedCachePolicy.validate(timestamp,against: self.currentDate()):
+
                 self.store.deleteCachedFeed { _ in}
                 
             case .empty, .found:
