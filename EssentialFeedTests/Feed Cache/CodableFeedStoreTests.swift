@@ -125,34 +125,10 @@ import EssentialFeed
      }
      
      func test_retrieve_hasNoSideEffectsOnNonEmptyCache() {
-              let sut = makeSUT()
-              let feed = uniqueImageFeed().local
-              let timestamp = Date()
-              let exp = expectation(description: "Wait for cache retrieval")
-
-              sut.insert(feed, timestamp: timestamp) { insertionError in
-                  XCTAssertNil(insertionError, "Expected feed to be inserted successfully")
-
-                  sut.retrieve { firstResult in
-                      sut.retrieve { secondResult in
-                          switch (firstResult, secondResult) {
-                          case let (.found(firstFound), .found(secondFound)):
-                              XCTAssertEqual(firstFound.feed, feed)
-                              XCTAssertEqual(firstFound.timestamp, timestamp)
-
-                              XCTAssertEqual(secondFound.feed, feed)
-                              XCTAssertEqual(secondFound.timestamp, timestamp)
-
-                          default:
-                              XCTFail("Expected retrieving twice from non empty cache to deliver same found result with feed \(feed) and timestamp \(timestamp), got \(firstResult) and \(secondResult) instead")
-                          }
-
-                          exp.fulfill()
-                      }
-                  }
-              }
-
-              wait(for: [exp], timeout: 1.0)
+            let sut = makeSUT()
+              
+         
+            expect(sut, toRetrieveTwice: .empty)
           }
      
      // - MARK: Helpers
@@ -184,6 +160,11 @@ import EssentialFeed
          
          wait(for: [exp], timeout: 1.0)
      }
+     
+     private func expect(_ sut: CodableFeedStore, toRetrieveTwice expectedResult: RetrieveCacheFeedResult, file: StaticString = #file, line: UInt = #line) {
+              expect(sut, toRetrieve: expectedResult, file: file, line: line)
+              expect(sut, toRetrieve: expectedResult, file: file, line: line)
+          }
 
      
      private func testSpecificStoreURL() -> URL {
